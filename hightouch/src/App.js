@@ -40,26 +40,29 @@ const App = () => {
 
 
   const triggerSync = async (apiToken, syncId) => {
-    // create or update the new campaign list
-    // await fetch(`https://api.hightouch.com/api/v1/syncs/${listCreatorSyncId}/trigger`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${apiToken}`
-    //   }
-    // })
-
     // Ping the backend node.js with the correct hightouch_sync endpoint and payload
-    await fetch(`https://end-the-extract.onrender.com/hightouch_sync`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        'apiToken': apiToken,
-        'syncId': syncId
+    try {
+      const response = await fetch(`https://end-the-extract.onrender.com/hightouch_sync`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          'apiToken': apiToken,
+          'syncId': syncId
+        })
       })
-    })
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      // Handle any errors that occur during the request
+      console.error('Error: ', error);
+    }
   }
 
   const handleClick = () => {
@@ -85,7 +88,7 @@ const App = () => {
             handleClick()
           } 
         }}
-        ></Button>
+        >{config['Button Text']}</Button>
         {buttonClicked && 
           <div style={{position: 'absolute', width: '50px', left: '76%'}}>✅</div>
         }

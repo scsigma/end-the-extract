@@ -19,17 +19,29 @@ app.get('/test', (req, res) => {
 // Hightouch Trigger Sync
 app.post('/hightouch_sync',  async (req, res) => {
     const {apiToken, syncId} = req.body;
-    // res.json({ token, syncId})
-    await fetch(`https://api.hightouch.com/api/v1/syncs/${syncId}/trigger`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiToken}`
-        }
-    })
+    const url = `https://api.hightouch.com/api/v1/syncs/${syncId}/trigger`;
 
-    res.json({ apiToken, syncId})
-    // i need to send back something better than this, ideally with the status code
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiToken}`
+            }
+        })
+        
+        if (!response.ok) {
+            throw new Error('External API request failed');
+        }
+
+        const externalData = await response.json();
+        
+        // Send back a 200 status
+        res.status(200).json({ message: 'Success', externalData});
+    } catch (error) {
+        // Handle errors that occured during the external API request   
+        res.status(500).json({ message: 'Error', error: error.message});
+    }
 })
 
 app.listen(port, () => {

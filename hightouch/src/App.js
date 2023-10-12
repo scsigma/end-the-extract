@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { client, useConfig } from '@sigmacomputing/plugin';
 import { ChakraProvider, Button, Box } from '@chakra-ui/react';
+import HightouchLogo from './graphics/ht_logo.png';
 
 // ---- Sigma Config -----
 client.config.configureEditorPanel([
@@ -76,22 +77,35 @@ const App = () => {
 
   return (
     <ChakraProvider>
-      <Box justifyContent="center" display="flex" alignItems="center" paddingTop="9px">
-        <Button
-        backgroundColor="#ff5c35"
-        color="white"
-        _hover={{ backgroundColor: "#fff4f2", color: "#ff5c35"}}
-        style={{ width: '200px'}}
-        onClick={() => {
-          if (allSigmaDataReceived) {
-            triggerSync(apiToken, syncId)
-            handleClick()
-          } 
-        }}
-        >{config['Button Text']}</Button>
-        {buttonClicked && 
-          <div style={{position: 'absolute', width: '50px', left: '76%'}}>✅</div>
-        }
+      <Box justifyContent="center" display="flex" alignItems="center" paddingTop="9px" paddingBottom="50px" style={{"backgroundColor":"#333333"}}>
+        <div style={{"display":"flex", "width":"300px"}}>
+          <div>
+            <img className='logo' src={HightouchLogo}></img>
+          </div>
+          <div style={{"display":"flex", "alignItems":"center"}}>
+            <Button
+            backgroundColor="#55c470"
+            color="white"
+            _hover={{ backgroundColor: "#ccf240", color: "#219d76"}}
+            style={{ width: '200px' }}
+            onClick={() => {
+              if (allSigmaDataReceived) {
+                triggerSync(apiToken, syncId)
+                handleClick()
+              } 
+            }}
+            >
+              {config['Button Text'] || "Export to HubSpot"}
+            </Button>
+          </div>
+          <div style={{"display":"flex","alignItems":"center","justifyContent":"center","width":"150px"}}>
+            <div style={{"width":"25px", "height":"25px", "display":"flex", "justifyContent":"center","alignItems":"center"}}>
+              {buttonClicked && 
+                <p style={{position: 'absolute', fontSize: '20px'}}>✅</p>
+              }
+            </div>
+          </div>
+        </div>
       </Box>
     </ChakraProvider>
   );

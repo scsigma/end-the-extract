@@ -11,8 +11,8 @@ app.get('/test', (req, res) => {
     res.send({ data: "Hello from the server!"})
 })
 
-app.post('/hightouch_sync', async (req, res) => {
-    const {apiTokenoken, syncId} = req.body;
+app.post('/hightouch_sync',  async (req, res) => {
+    const {apiToken, syncId} = req.body;
     // res.json({ token, syncId})
     await fetch(`https://api.hightouch.com/api/v1/syncs/${syncId}/trigger`, {
         method: 'POST',

@@ -9,10 +9,14 @@ const app = express();
 app.use(express.json());
 app.use(cors())
 
+// Endpoints
+
+// Test
 app.get('/test', (req, res) => {
     res.send({ data: "Hello from the server!"})
 })
 
+// Hightouch Trigger Sync
 app.post('/hightouch_sync',  async (req, res) => {
     const {apiToken, syncId} = req.body;
     // res.json({ token, syncId})
@@ -25,6 +29,7 @@ app.post('/hightouch_sync',  async (req, res) => {
     })
 
     res.json({ apiToken, syncId})
+    // i need to send back something better than this, ideally with the status code
 })
 
 app.listen(port, () => {

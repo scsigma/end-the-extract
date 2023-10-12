@@ -1,5 +1,3 @@
-### yarn start
+# Root Directory
 
-This will simultaneously start the backend server as well as the frontend
-
-test
+### This repo contains both frontend buttons and a backend server with endpoints that each of the frontends will make requests to

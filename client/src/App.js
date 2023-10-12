@@ -45,22 +45,31 @@ const App = () => {
 
   const triggerSync = async (listCreatorSyncId, contactSyncId, apiToken) => {
     // create or update the new campaign list
-    await fetch(`https://api.hightouch.com/api/v1/syncs/${listCreatorSyncId}/trigger`, {
+    // await fetch(`https://api.hightouch.com/api/v1/syncs/${listCreatorSyncId}/trigger`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Authorization': `Bearer ${apiToken}`
+    //   }
+    // })
+
+    // THIS IS TESTING THE SERVER
+    await fetch(`https://end-the-extract.onrender.com/hightouch_sync`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiToken}`
+      body: {
+        'apiToken': apiToken,
+        'syncId': contactSyncId
       }
     })
 
     // create or update the overall contact list
-    await fetch(`https://api.hightouch.com/api/v1/syncs/${contactSyncId}/trigger`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiToken}`
-      }
-    })
+    // await fetch(`https://api.hightouch.com/api/v1/syncs/${contactSyncId}/trigger`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Authorization': `Bearer ${apiToken}`
+    //   }
+    // })
   }
 
   const handleClick = () => {

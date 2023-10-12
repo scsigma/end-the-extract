@@ -56,10 +56,13 @@ const App = () => {
     // THIS IS TESTING THE SERVER
     await fetch(`https://end-the-extract.onrender.com/hightouch_sync`, {
       method: 'POST',
-      body: {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
         'apiToken': apiToken,
         'syncId': contactSyncId
-      }
+      })
     })
 
     // create or update the overall contact list

@@ -77,7 +77,7 @@ const App = () => {
 
   return (
     <ChakraProvider>
-      <Box justifyContent="center" display="flex" alignItems="center" paddingTop="9px" paddingBottom="50px" style={{"backgroundColor":"#333333"}}>
+      <Box justifyContent="center" display="flex" alignItems="center" paddingTop="12px" paddingBottom="50px" style={{"backgroundColor":"#333333"}}>
         <div style={{"display":"flex", "width":"300px"}}>
           <div>
             <img className='logo' src={HightouchLogo}></img>

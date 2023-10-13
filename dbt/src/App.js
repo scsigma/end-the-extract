@@ -82,7 +82,7 @@ const App = () => {
   return (
     <ChakraProvider>
       <Box justifyContent="center" display="flex" alignItems="center" paddingTop="1px" paddingBottom="1px" style={{"backgroundColor":"#333333"}}>
-        <div style={{"display":"flex", "width":"300px"}}>
+        <div style={{"display":"flex", "width":"300px", "height":"54px"}}>
           <div style={{"display":"flex", "width":"100px","justifyContent":"center", "alignItems":"center"}}>
             <img className='logo' src={dbtLogo} style={{"width":"60%"}}></img>
           </div>
@@ -103,7 +103,7 @@ const App = () => {
             </Button>
           </div>
           <div style={{"display":"flex","alignItems":"center","justifyContent":"center","width":"85px"}}>
-            <div style={{"width":"25px", "height":"25px", "display":"flex", "justifyContent":"center","alignItems":"center"}}>
+            <div style={{"width":"25px", "height":"25px", "display":"flex", "justifyContent":"center","alignItems":"center", "paddingRight": "10px"}}>
               {buttonClicked && 
                 <p style={{position: 'absolute', fontSize: '20px'}}>✅</p>
               }

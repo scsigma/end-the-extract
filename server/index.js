@@ -44,6 +44,40 @@ app.post('/hightouch_sync',  async (req, res) => {
     }
 })
 
+// dbt Trigger Sync
+app.post('/dbt_sync',  async (req, res) => {
+    const {accountId, jobId, apiToken} = req.body;    
+    const url = `https://cloud.getdbt.com/api/v2/accounts/${accountId}/jobs/${jobId}/run/`;
+
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                Authorization: `Bearer ${apiToken}`
+            },
+            body: JSON.stringify({
+                "cause": "Triggerd via API"
+              })
+        })
+        
+        if (!response.ok) {
+            throw new Error('External API request failed');
+        }
+
+        const externalData = await response.json();
+        
+        // Send back a 200 status
+        res.status(200).json({ message: 'Success', externalData});
+    } catch (error) {
+        // Handle errors that occured during the external API request   
+        res.status(500).json({ message: 'Error', error: error.message});
+    }
+})
+
+
+
 app.listen(port, () => {
     console.log(`Server running on ${port}`)
 })

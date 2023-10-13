@@ -1,26 +1,26 @@
 import React, {useEffect, useState} from 'react';
 import { client, useConfig } from '@sigmacomputing/plugin';
 import { ChakraProvider, Button, Box } from '@chakra-ui/react';
+import HightouchLogo from './graphics/ht_logo.png';
 
 // ---- Sigma Config -----
 client.config.configureEditorPanel([
-  // { name: "source", type: "element"},
-  { name: "Hightouch API Token", type: "text"},
-  { name: "List Creator syncId", type: "text"},
-  { name: "Contact List Update syncId", type: "text"},
-  { name: "Button Text", type: "text", defaultValue: "Export to HubSpot"}
+  { name: "API Token", type: "text"},
+  { name: "Account ID", type: "text"},
+  { name: "Job ID", type: "text"},
+  { name: "Button Text", type: "text", defaultValue: "Run dbt Job"}
 ]);
 // -----------------------
 
 const allSigmaDataReceived = (config) => {
-  return config['Hightouch API Token'] && config['List Creator syncId'] && config['Contact List Update syncId'];
+  return config['API Token'] && config['Account ID'] && config['Job ID'];
 }
 
 const App = () => {
 
   const [apiToken, setApiToken] = useState(null);
-  const [listCreatorSyncId, setListCreatorSyncId] = useState(null);
-  const [contactSyncId, setContactSyncId] = useState(null);
+  const [accountId, setAccountId] = useState(null);
+  const [jobId, setJobId] = useState(null);
   const [allData, setAllData] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
 
@@ -35,44 +35,38 @@ const App = () => {
   useEffect(() => {
     setAllData(allSigmaDataReceived(config))
     if (allData) {
-      setApiToken(config['Hightouch API Token']);
-      setListCreatorSyncId(config['List Creator syncId']);
-      setContactSyncId(config['Contact List Update syncId']);
+      setApiToken(config['API Token']);
+      setAccountId(config['Account ID']);
+      setJobId(config['Job ID']);
     }
   }, [config])
 
 
 
-  const triggerSync = async (listCreatorSyncId, contactSyncId, apiToken) => {
-    // create or update the new campaign list
-    // await fetch(`https://api.hightouch.com/api/v1/syncs/${listCreatorSyncId}/trigger`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${apiToken}`
-    //   }
-    // })
-
-    // THIS IS TESTING THE SERVER
-    await fetch(`https://end-the-extract.onrender.com/hightouch_sync`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        'apiToken': apiToken,
-        'syncId': contactSyncId
+  const triggerSync = async (apiToken, syncId) => {
+    // Ping the backend node.js with the correct hightouch_sync endpoint and payload
+    try {
+      const response = await fetch(`https://end-the-extract.onrender.com/hightouch_sync`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          'apiToken': apiToken,
+          'syncId': syncId
+        })
       })
-    })
 
-    // create or update the overall contact list
-    // await fetch(`https://api.hightouch.com/api/v1/syncs/${contactSyncId}/trigger`, {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${apiToken}`
-    //   }
-    // })
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      // Handle any errors that occur during the request
+      console.error('Error: ', error);
+    }
   }
 
   const handleClick = () => {
@@ -86,22 +80,35 @@ const App = () => {
 
   return (
     <ChakraProvider>
-      <Box justifyContent="center" display="flex" alignItems="center" paddingTop="9px">
-        <Button
-        backgroundColor="#ff5c35"
-        color="white"
-        _hover={{ backgroundColor: "#fff4f2", color: "#ff5c35"}}
-        style={{ width: '200px'}}
-        onClick={() => {
-          if (allSigmaDataReceived) {
-            triggerSync(listCreatorSyncId, contactSyncId, apiToken)
-            handleClick()
-          } 
-        }}
-        >Export to Hubspot</Button>
-        {buttonClicked && 
-          <div style={{position: 'absolute', width: '50px', left: '76%'}}>✅</div>
-        }
+      <Box justifyContent="center" display="flex" alignItems="center" paddingTop="1px" paddingBottom="1px" style={{"backgroundColor":"#333333"}}>
+        <div style={{"display":"flex", "width":"300px"}}>
+          <div>
+            <img className='logo' src={HightouchLogo}></img>
+          </div>
+          <div style={{"display":"flex", "alignItems":"center"}}>
+            <Button
+            backgroundColor="#55c470"
+            color="white"
+            _hover={{ backgroundColor: "#ccf240", color: "#219d76"}}
+            style={{ width: '200px' }}
+            onClick={() => {
+              if (allSigmaDataReceived) {
+                triggerSync(apiToken, accountId, jobId)
+                handleClick()
+              } 
+            }}
+            >
+              {config['Button Text'] || "Export to HubSpot"}
+            </Button>
+          </div>
+          <div style={{"display":"flex","alignItems":"center","justifyContent":"center","width":"150px"}}>
+            <div style={{"width":"25px", "height":"25px", "display":"flex", "justifyContent":"center","alignItems":"center"}}>
+              {buttonClicked && 
+                <p style={{position: 'absolute', fontSize: '20px'}}>✅</p>
+              }
+            </div>
+          </div>
+        </div>
       </Box>
     </ChakraProvider>
   );

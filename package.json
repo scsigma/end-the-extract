@@ -10,7 +10,7 @@
     "dbt"
   ],
   "scripts": {
-    "start": "concurrently \"yarn workspace server start\" \"yarn workspace hightouch start\""
+    "start": "concurrently \"yarn workspace server start\" \"yarn workspace dbt start\""
     },
   "devDependencies": {
     "concurrently": "^8.2.0"

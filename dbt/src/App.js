@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { client, useConfig } from '@sigmacomputing/plugin';
 import { ChakraProvider, Button, Box } from '@chakra-ui/react';
-import HightouchLogo from './graphics/ht_logo.png';
+import dbtLogo from './graphics/dbt_logo.png';
 
 // ---- Sigma Config -----
 client.config.configureEditorPanel([
@@ -43,17 +43,18 @@ const App = () => {
 
 
 
-  const triggerSync = async (apiToken, syncId) => {
+  const triggerSync = async (apiToken, accountId, jobId) => {
     // Ping the backend node.js with the correct hightouch_sync endpoint and payload
     try {
-      const response = await fetch(`https://end-the-extract.onrender.com/hightouch_sync`, {
+      const response = await fetch(`https://end-the-extract.onrender.com/dbt_sync`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           'apiToken': apiToken,
-          'syncId': syncId
+          'accountId': accountId,
+          'jobId': jobId
         })
       })
 
@@ -62,7 +63,7 @@ const App = () => {
       }
 
       const data = await response.json();
-      console.log(data);
+      
     } catch (error) {
       // Handle any errors that occur during the request
       console.error('Error: ', error);
@@ -82,14 +83,14 @@ const App = () => {
     <ChakraProvider>
       <Box justifyContent="center" display="flex" alignItems="center" paddingTop="1px" paddingBottom="1px" style={{"backgroundColor":"#333333"}}>
         <div style={{"display":"flex", "width":"300px"}}>
-          <div>
-            <img className='logo' src={HightouchLogo}></img>
+          <div style={{"display":"flex", "width":"100px","justifyContent":"center", "alignItems":"center"}}>
+            <img className='logo' src={dbtLogo} style={{"width":"60%"}}></img>
           </div>
           <div style={{"display":"flex", "alignItems":"center"}}>
             <Button
-            backgroundColor="#55c470"
+            backgroundColor="#ff5c35"
             color="white"
-            _hover={{ backgroundColor: "#ccf240", color: "#219d76"}}
+            _hover={{ backgroundColor: "#fe9e5f", color: "#333333"}}
             style={{ width: '200px' }}
             onClick={() => {
               if (allSigmaDataReceived) {
@@ -98,10 +99,10 @@ const App = () => {
               } 
             }}
             >
-              {config['Button Text'] || "Export to HubSpot"}
+              {config['Button Text'] || "Export to dbt"}
             </Button>
           </div>
-          <div style={{"display":"flex","alignItems":"center","justifyContent":"center","width":"150px"}}>
+          <div style={{"display":"flex","alignItems":"center","justifyContent":"center","width":"85px"}}>
             <div style={{"width":"25px", "height":"25px", "display":"flex", "justifyContent":"center","alignItems":"center"}}>
               {buttonClicked && 
                 <p style={{position: 'absolute', fontSize: '20px'}}>✅</p>

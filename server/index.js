@@ -58,7 +58,7 @@ app.post('/dbt_sync',  async (req, res) => {
                 Authorization: `Bearer ${apiToken}`
             },
             body: JSON.stringify({
-                "cause": "Triggerd via API"
+                "cause": "Triggered via Sigma Button"
               })
         })
         

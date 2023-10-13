@@ -6,19 +6,21 @@ import HightouchLogo from './graphics/ht_logo.png';
 // ---- Sigma Config -----
 client.config.configureEditorPanel([
   { name: "API Token", type: "text"},
-  { name: "Sync ID", type: "text"},
+  { name: "List Creation Sync ID", type: "text"},
+  { name: "Contact List Update ID", type: "text"},
   { name: "Button Text", type: "text", defaultValue: "Export to HubSpot"}
 ]);
 // -----------------------
 
 const allSigmaDataReceived = (config) => {
-  return config['API Token'] && config['Sync ID'];
+  return config['API Token'] && config['List Creation Sync ID'] && config['Contact List Update ID'];
 }
 
 const App = () => {
 
   const [apiToken, setApiToken] = useState(null);
-  const [syncId, setSyncId] = useState(null);
+  const [listCreationId, setListCreationId] = useState(null);
+  const [contactUpdateId, setContactUpdateId] = useState(null);
   const [allData, setAllData] = useState(false);
   const [buttonClicked, setButtonClicked] = useState(false);
 
@@ -34,32 +36,56 @@ const App = () => {
     setAllData(allSigmaDataReceived(config))
     if (allData) {
       setApiToken(config['API Token']);
-      setSyncId(config['Sync ID']);
+      setListCreationId(config['List Creation Sync ID']);
+      setContactUpdateId(config['Contact List Update ID']);
     }
   }, [config])
 
 
 
-  const triggerSync = async (apiToken, syncId) => {
+  const triggerSync = async (apiToken, listCreationId, contactUpdateId) => {
     // Ping the backend node.js with the correct hightouch_sync endpoint and payload
     try {
-      const response = await fetch(`https://end-the-extract.onrender.com/hightouch_sync`, {
+
+      // Runs the sync for the List Creation
+      const listCreationResponse = await fetch(`https://end-the-extract.onrender.com/hightouch_sync`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           'apiToken': apiToken,
-          'syncId': syncId
+          'syncId': listCreationId
         })
       })
 
-      if (!response.ok) {
+      if (!listCreationResponse.ok) {
         throw new Error('Network response was not ok');
       }
 
-      const data = await response.json();
-      console.log(data);
+      const listCreationData = await listCreationResponse.json();
+      // console.log('List Creation Response ', listCreationData)
+
+      // Runs the sync for the List Creation
+      const contactUpdateResponse = await fetch(`https://end-the-extract.onrender.com/hightouch_sync`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          'apiToken': apiToken,
+          'syncId': contactUpdateId
+        })
+      })
+
+      if (!contactUpdateResponse.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const contactUpdateData = await contactUpdateResponse.json();
+      // console.log('Contact Update Response ', contactUpdateData)
+
+
     } catch (error) {
       // Handle any errors that occur during the request
       console.error('Error: ', error);
@@ -90,7 +116,7 @@ const App = () => {
             style={{ width: '200px' }}
             onClick={() => {
               if (allSigmaDataReceived) {
-                triggerSync(apiToken, syncId)
+                triggerSync(apiToken, listCreationId, contactUpdateId)
                 handleClick()
               } 
             }}

@@ -8,7 +8,8 @@ client.config.configureEditorPanel([
   { name: "API Token", type: "text"},
   { name: "List Creation Sync ID", type: "text"},
   { name: "Contact List Update ID", type: "text"},
-  { name: "Button Text", type: "text", defaultValue: "Export to HubSpot"}
+  { name: "Button Text", type: "text", defaultValue: "Export to HubSpot"},
+  { name: "Background Color (HEX code)", type: "text", defaultValue: "#ffffff"}
 ]);
 // -----------------------
 
@@ -103,7 +104,7 @@ const App = () => {
 
   return (
     <ChakraProvider>
-      <Box justifyContent="center" display="flex" alignItems="center" paddingTop="1px" paddingBottom="1px" style={{"backgroundColor":"#333333"}}>
+      <Box justifyContent="center" display="flex" alignItems="center" paddingTop="1px" paddingBottom="1px" backgroundColor={config['Background Color (HEX code)'] || "#ffffff"}>
         <div style={{"display":"flex", "width":"300px"}}>
           <div>
             <img className='logo' src={HightouchLogo}></img>
